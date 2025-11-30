@@ -8,14 +8,12 @@ public class RockPaperScissorsServerUDP {
         DatagramSocket server = new DatagramSocket(5000);
         System.out.println("UDP Server running...");
 
-        // ---- Receive Player 1 name ----
         DatagramPacket p1 = receivePacket(server);
         String name1 = packetData(p1);
         InetAddress addr1 = p1.getAddress();
         int port1 = p1.getPort();
         System.out.println("Player 1: " + name1);
 
-        // ---- Receive Player 2 name ----
         DatagramPacket p2 = receivePacket(server);
         String name2 = packetData(p2);
         InetAddress addr2 = p2.getAddress();
@@ -26,14 +24,12 @@ public class RockPaperScissorsServerUDP {
 
         while (score1 < 3 && score2 < 3) {
 
-            // Tell players to play
             send(server, "let's play", addr1, port1);
             send(server, "let's play", addr2, port2);
 
             String move1 = null;
             String move2 = null;
 
-            // ---- Wait until VALID moves for BOTH players received ----
             while (move1 == null || move2 == null) {
 
                 DatagramPacket pkt = receivePacket(server);
@@ -45,13 +41,11 @@ public class RockPaperScissorsServerUDP {
                 String player = parts[0];
                 String move = parts[1];
 
-                // Validate move
                 if (!move.equals("1") && !move.equals("2") && !move.equals("3")) {
                     send(server, "ERROR Invalid input! Enter 1,2,3", pkt.getAddress(), pkt.getPort());
                     continue;
                 }
 
-                // Assign correct move
                 if (player.equals(name1)) {
                     move1 = move;
                 } else if (player.equals(name2)) {
@@ -59,7 +53,6 @@ public class RockPaperScissorsServerUDP {
                 }
             }
 
-            // ---- Determine round winner ----
             String roundWinner = determineWinner(
                     Integer.parseInt(move1),
                     Integer.parseInt(move2),
@@ -84,8 +77,6 @@ public class RockPaperScissorsServerUDP {
 
         System.out.println("Game finished. Winner: " + finalWinner);
     }
-
-    // -------- Helper Methods --------
 
     private static void send(DatagramSocket socket, String msg, InetAddress addr, int port) throws Exception {
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);

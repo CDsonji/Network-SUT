@@ -7,7 +7,7 @@ public class RockPaperScissorsClientUDP {
     public static void main(String[] args) throws Exception {
 
         Scanner scanner = new Scanner(System.in);
-        
+
         System.out.print("Enter your player name: ");
         String playerName = scanner.nextLine().trim();
 
